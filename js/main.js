@@ -12,6 +12,9 @@
 
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
+const pushToTalkButton = document.getElementById('pushToTalkButton');
+pushToTalkButton.onmousedown = start;
+pushToTalkButton.onmouseup = stop;
 startButton.onclick = start;
 stopButton.onclick = stop;
 
