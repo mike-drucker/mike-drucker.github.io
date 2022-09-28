@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-    <h1>helloworld3</h1>
+    <h1>helloworld4</h1>
     <script>
         var ws = new WebSocket("ws://localhost:9001/");
         // Listen for possible errors
@@ -24,6 +24,7 @@
         }
         function stop() {
            console.log("stop");
+           ws.send("mp3_start");
            mediaRecorder.stop();
         }                                               
     </script>
