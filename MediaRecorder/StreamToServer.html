@@ -1,1 +1,24 @@
-
+<!DOCTYPE html>
+<html lang=“en”>
+<head>
+    <meta charset=“UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>helloworld</h1>
+    <script>
+        var ws = new WebSocket("ws://localhost:9001/");
+        // Listen for possible errors
+        ws.addEventListener('error', (event) => {
+          console.log('WebSocket error: ', event);
+        });
+        var mediaRecorder = null;
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+          mediaRecorder = new MediaRecorder(stream);
+          mediaRecorder.start(50);
+          mediaRecorder.addEventListener("dataavailable",event => { ws.send(new Blob([event.data], {type: 'audio/mp3'}))});
+        });
+    </script>
+<button onmousedown="start()" onmouseup="stop()">Push To Talk<button>
+</body>
+</html>
