@@ -18,7 +18,7 @@
           mediaRecorder.addEventListener("dataavailable",event => { ws.send(new Blob([event.data], {type: 'audio/mp3'}))});
         });
         function start() {
-           console.log("stop");
+           console.log("start");
            mediaRecorder.start(50);
         }
         function stop() {
