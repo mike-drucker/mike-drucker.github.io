@@ -7,16 +7,16 @@
 <body>
     <h1>helloworld</h1>
     <script>
-        var ws = new WebSocket(“ws://localhost:9001/”, ‘echo-protocol’);
+        var ws = new WebSocket("ws://localhost:9001/", 'echo-protocol');
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
                 const mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.start(5000);
-                mediaRecorder.addEventListener(“dataavailable”, event => {
-                    console.log(“sending audio”);
-                    const audioBlob = new Blob([event.data], {type: ‘audio/mp3’});
+                mediaRecorder.addEventListener("dataavailable", event => {
+                    console.log("sending audio");
+                    const audioBlob = new Blob([event.data], {type: 'audio/mp3'});
                     ws.send(audioBlob);
-                    console.log(“sent audio”);
+                    console.log("sent audio");
                 });
             });
     </script>
