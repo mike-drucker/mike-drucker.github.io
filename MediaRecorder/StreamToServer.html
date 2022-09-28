@@ -15,9 +15,14 @@
         var mediaRecorder = null;
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
           mediaRecorder = new MediaRecorder(stream);
-          mediaRecorder.start(50);
           mediaRecorder.addEventListener("dataavailable",event => { ws.send(new Blob([event.data], {type: 'audio/mp3'}))});
         });
+        function start() {
+           mediaRecorder.start(50);
+        }
+        function start() {
+           mediaRecorder.stop();
+        }                                               
     </script>
 <button onmousedown="start()" onmouseup="stop()">Push To Talk<button>
 </body>
