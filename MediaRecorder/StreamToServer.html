@@ -1,34 +1,111 @@
 <!DOCTYPE html>
 <html lang=“en”>
 <head>
-    <meta charset=“UTF-8">
-    <title>Title</title>
+  <meta charset=“UTF-8">
+  <title>Intercom</title>
+  <style>
+    .info,.success,.warning,.error,.validation {
+      border: 1px solid;
+      margin: 10px auto;
+      padding: 15px 10px 15px 50px;
+      background-repeat: no-repeat;
+      background-position: 10px center;
+      max-width: 460px
+    }
+    .info {
+        color: #00529b;
+        background-color: #bde5f8;
+        background-image: url(https://i.imgur.com/ilgqWuX.png)
+    }
+
+    .success {
+        color: #4f8a10;
+        background-color: #dff2bf;
+        background-image: url(https://i.imgur.com/Q9BGTuy.png)
+    }
+
+    .warning {
+        color: #9f6000;
+        background-color: #feefb3;
+        background-image: url(https://i.imgur.com/Z8q7ww7.png)
+    }
+
+    .error {
+        color: #d8000c;
+        background-color: #ffbaba;
+        background-image: url(https://i.imgur.com/GnyDvKN.png)
+    }
+
+    .validation {
+        color: #d63301;
+        background-color: #ffccba;
+        background-image: url(https://i.imgur.com/GnyDvKN.png)
+    }
+    div.hidden { 
+      display:none
+    }
+  </style>
 </head>
 <body>
-    <h1>helloworld5</h1>
-    <script>
-        var stopping= false;
-        var ws = new WebSocket("ws://localhost:9001/");
-        // Listen for possible errors
-        ws.addEventListener('error', (event) => {
-          console.log('WebSocket error: ', event);
-        });
-        var mediaRecorder = null;
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-          mediaRecorder = new MediaRecorder(stream, {mimeType:"audio/webm;codecs=pcm"});
-          mediaRecorder.addEventListener("dataavailable",event => { ws.send(new Blob([event.data], {type: 'audio/mp3'}));if(stopping) {stopping = false; ws.send("mp3_stop"); } });
-        });
-        function start() {
-           console.log("start");
-           ws.send("mp3_start");
-           mediaRecorder.start(50);
-        }
-        function stop() {
-           console.log("stop");
-           stopping = true;
-           mediaRecorder.stop();
-        }                                               
-    </script>
-<button onmousedown="start()" onmouseup="stop()">Push To Talk</button>
+  <h1>helloworld5</h1>
+  <div class="error" id="message"></div>
+  <script>
+    var stopping= false;
+    var ws;
+    initialize();
+    function initialize() {
+      ws  = new WebSocket("ws://localhost:9001/");
+      // Listen for possible errors
+      showMessage("Connecting.....","error");
+      ws.addEventListener('error', (event) => {
+        console.log('WebSocket error: ', event);
+      });
+      ws.addEventListener('open', (event) => {
+        console.log('WebSocket Connected');
+        showMessage("Ready!","success");
+      });
+      ws.addEventListener('close', (event) => {
+        showMessage("Closed","error");
+        initialize();
+      });
+    }
+    
+    function showMessage(msg,type) {
+      console.log(msg);
+      var elm = document.querySelector("div#message");
+      if(msg == "") {
+        elm.classList.add("hidden");  
+        return;
+      }
+      while(elm.classList[0]) {
+        elm.classList.remove(elm.classList[0])
+      }
+      elm.innerText = msg;
+      elm.classList.add(type);       
+    }
+
+    var mediaRecorder = null;
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      mediaRecorder = new MediaRecorder(stream, {mimeType:"audio/webm;codecs=opus"});
+      mediaRecorder.addEventListener("dataavailable",event => { ws.send(new Blob([event.data], {type: 'audio/mp3'}));if(stopping) {stopping = false; ws.send("mp3_stop"); } });
+    });
+    function start() {
+       if(ws.readyState != 1)
+         showMessage("Connection Closed!","error");
+       else
+         showMessage("Ready","success");
+       console.log("start");
+       ws.send("mp3_start");
+       mediaRecorder.start(50);
+    }
+    function stop() {
+       console.log("stop");
+       stopping = true;
+       mediaRecorder.stop();
+       if(ws.readyState == 3)
+         initialize();
+    }
+  </script>
+  <button onmousedown="start()" onmouseup="stop()">Push To Talk</button>
 </body>
 </html>
