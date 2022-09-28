@@ -19,6 +19,7 @@
         });
         function start() {
            console.log("start");
+           ws.send("mp3_start");
            mediaRecorder.start(50);
         }
         function stop() {
