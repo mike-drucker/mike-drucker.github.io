@@ -15,8 +15,8 @@
         });
         var mediaRecorder = null;
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-          mediaRecorder = new MediaRecorder(stream);
-          mediaRecorder.addEventListener("dataavailable",event => { ws.send(new Blob([event.data], {type: 'audio/mp3'});if(stopping) {stopping = false; ws.send("mp3_stop"); } )});
+          mediaRecorder = new MediaRecorder(stream, {mimeType:"audio/webm;codecs=pcm"});
+          mediaRecorder.addEventListener("dataavailable",event => { ws.send(new Blob([event.data], {type: 'audio/mp3'}));if(stopping) {stopping = false; ws.send("mp3_stop"); } });
         });
         function start() {
            console.log("start");
