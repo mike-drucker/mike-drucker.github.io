@@ -18,12 +18,14 @@
           mediaRecorder.addEventListener("dataavailable",event => { ws.send(new Blob([event.data], {type: 'audio/mp3'}))});
         });
         function start() {
+           console.log("stop");
            mediaRecorder.start(50);
         }
-        function start() {
+        function stop() {
+           console.log("stop");
            mediaRecorder.stop();
         }                                               
     </script>
-<button onmousedown="start()" onmouseup="stop()">Push To Talk<button>
+<button onmousedown="start()" onmouseup="stop()">Push To Talk</button>
 </body>
 </html>
